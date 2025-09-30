@@ -1,0 +1,5 @@
+customer_id,name,segment,country,region
+1,Alpha LLC,Enterprise,Germany,EU
+2,Beta GmbH,SMB,Germany,EU
+3,Gamma Inc,Enterprise,USA,US
+4,Delta Ltd,SMB,India,APAC

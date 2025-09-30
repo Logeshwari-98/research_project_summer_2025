@@ -1,0 +1,23 @@
+[
+  {
+    "query": "How was revenue_q2_2023 calculated?",
+    "metric": "revenue_q2_2023",
+    "model_answer": "Sure, here's the step-by-step explanation of how revenue_q2_2023 was calculated:\n\n1. **revenue_q2_2023:** This metric calculates the total revenue earned in the second quarter of 2023.\n\n2. **q2_1:** This step selects all transactions that occurred between April 1st and June 30th, 2023.\n\n3. **SUM(amount)**: For each transaction in the selected range, the 'amount' column is summed up to get the total revenue earned within Q2 2023.\n\n4. **SUM(amount) as q2_revenue:** The total revenue from all transactions within Q2 2023 is accumulated and stored in the 'q2_revenue' metric.\n\nTherefore, the 'revenue_q2_2023' metric represents the total revenue earned in the second quarter of 2023.",
+    "ground_truth": "Filter transactions between 2023-04-01 and 2023-06-30, then sum the 'amount' column to compute Q2 revenue.",
+    "similarity": 0.803050685030424
+  },
+  {
+    "query": "Explain gross_margin_percentage_by_product.",
+    "metric": "gross_margin_percentage_by_product",
+    "model_answer": "Sure, here's the step-by-step explanation of how financial metrics were calculated:\n\n**Step 1:** Calculate total revenue by summing the 'amount' column in the 'transactions' table.\n\n```sql\nSELECT SUM(amount) as total_revenue FROM transactions;\n```\n\n**Step 2:** Calculate the gross margin percentage by dividing the revenue minus the cost of goods sold (COGS) by the total revenue and multiplying by 100.\n\n```sql\nSELECT (r.revenue - c.cogs) / r.revenue as gross_margin_pct FROM revenue r JOIN cogs c ON r.product_id = c.product_id;\n```\n\n**Step 3:** Calculate the cost of goods sold (COGS) by summing the 'amount' column in the 'transactions' table.\n\n```sql\nSELECT SUM(cost) as cogs FROM transactions GROUP BY product_id;\n```\n\n**Step 4:** Calculate the gross margin percentage by dividing the difference between the revenue and COGS by the total revenue and multiplying by 100.\n\n```sql\nSELECT SUM(amount) as revenue, (r.revenue - c.cogs) / r.revenue as gross_margin_pct FROM revenue r JOIN cogs c ON r.product_id = c.product_id;\n```\n\n**Step 5:** Calculate the total revenue by summing the 'amount' column in all transactions.\n\n```sql\nSELECT SUM(amount) as total_revenue FROM transactions;\n```\n\n**Step 6:** Calculate the customer lifetime value (CLTV) by summing the 'amount' column in all transactions for each customer and grouping by customer ID.\n\n```sql\nSELECT customer_id, SUM(amount) as revenue_per_customer FROM transactions GROUP BY customer_id;\n```\n\n**The final results of these calculations will be stored in the following metrics:**\n\n- gross_margin_percentage_by_product\n- total_revenue\n- customer_ltv\n\n",
+    "ground_truth": "Aggregate revenue by product (sum amounts), compute COGS by product (sum costs), then compute (revenue - cogs) / revenue per product.",
+    "similarity": 0.6326933441769212
+  },
+  {
+    "query": "What is customer_ltv?",
+    "metric": "customer_ltv",
+    "model_answer": "Sure. Here's the explanation of customer_ltv metric:\n\n**Step 1**: Calculate the average revenue per customer:\n- SQL query `SELECT AVG(revenue_per_customer) as avg_rev_per_customer FROM <customer_revenue>` calculates the average revenue per customer across all customers.\n\n**Step 2**: Calculate customer lifetime value:\n- SQL query `SELECT avg_rev_per_customer * 3 as expected_customer_ltv` multiplies the average revenue per customer by 3 to get the customer lifetime value (CLV). This step calculates the CLV by multiplying average revenue per customer by 3.\n\n**Step 3**: Apply business rule to adjust CLV:\n- The SQL query `SELECT # business rule: use expected lifetime = 3 years` uses a business rule to adjust the customer lifetime value based on the expected customer lifetime (3 years in this case). This step ensures that the CLV is calculated based on the expected customer lifetime.\n\n**Step 4**: Calculate gross margin percentage for each product:\n- SQL query `SELECT product_id, SUM(amount) as revenue FROM transactions GROUP BY product_id` aggregates revenue by product using transactions grouped by product_id.\n\n**Result**:\nThe final metric `customer_ltv` represents the customer lifetime value, calculated by multiplying the average revenue per customer by 3 and applying a business rule based on the expected customer lifetime.\n\n",
+    "ground_truth": "Aggregate revenue per customer, compute average revenue per customer, assume expected lifetime = 3 years, multiply average by 3 to estimate CLV.",
+    "similarity": 0.7212179136280961
+  }
+]

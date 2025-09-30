@@ -1,0 +1,97 @@
+{
+  "total_revenue": {
+    "metric": "total_revenue",
+    "description": "Total revenue is the sum of all transaction amounts across all dates and regions.",
+    "steps": [
+      {
+        "id": "t1",
+        "sql": "SELECT SUM(amount) as total_revenue FROM transactions;",
+        "description": "Aggregate all transactions and sum the 'amount' column to obtain total revenue."
+      }
+    ]
+  },
+  "revenue_q2_2023": {
+    "metric": "revenue_q2_2023",
+    "description": "Revenue for Q2 2023 (Apr 1 to Jun 30, 2023).",
+    "steps": [
+      {
+        "id": "q2_1",
+        "sql": "SELECT * FROM transactions WHERE date BETWEEN '2023-04-01' AND '2023-06-30';",
+        "description": "Filter transactions to dates within Q2 2023."
+      },
+      {
+        "id": "q2_2",
+        "sql": "SELECT SUM(amount) as q2_revenue FROM <filtered> ;",
+        "description": "Sum amounts from the filtered transaction set to compute Q2 revenue."
+      }
+    ]
+  },
+  "gross_margin_percentage_by_product": {
+    "metric": "gross_margin_percentage_by_product",
+    "description": "Gross margin percentage per product = (revenue_by_product - cogs_by_product) / revenue_by_product",
+    "steps": [
+      {
+        "id": "g1",
+        "sql": "SELECT product_id, SUM(amount) as revenue FROM transactions GROUP BY product_id;",
+        "description": "Aggregate revenue by product using transactions grouped by product_id."
+      },
+      {
+        "id": "g2",
+        "sql": "SELECT product_id, SUM(cost) as cogs FROM transactions GROUP BY product_id;",
+        "description": "Aggregate COGS by product (using transaction-level 'cost' field)."
+      },
+      {
+        "id": "g3",
+        "sql": "SELECT r.product_id, (r.revenue - c.cogs) / r.revenue as gross_margin_pct FROM revenue r JOIN cogs c ON r.product_id = c.product_id;",
+        "description": "Join revenue and cogs by product and compute (revenue - cogs)/revenue for each product."
+      }
+    ]
+  },
+  "net_income_2023": {
+    "metric": "net_income_2023",
+    "description": "Net income for calendar year 2023 approximated as total revenue in 2023 minus operating expenses dated in 2023.",
+    "steps": [
+      {
+        "id": "n1",
+        "sql": "SELECT SUM(amount) as rev_2023 FROM transactions WHERE date BETWEEN '2023-01-01' AND '2023-12-31';",
+        "description": "Sum transaction amounts for 2023 to get revenue in 2023."
+      },
+      {
+        "id": "n2",
+        "sql": "SELECT SUM(amount) as expenses_2023 FROM expenses WHERE date BETWEEN '2023-01-01' AND '2023-12-31';",
+        "description": "Sum expenses in 2023."
+      },
+      {
+        "id": "n3",
+        "sql": "SELECT rev_2023 - expenses_2023 as net_income_2023;",
+        "description": "Subtract expenses from revenue to compute net income."
+      }
+    ]
+  },
+  "customer_ltv": {
+    "metric": "customer_ltv",
+    "description": "Simplified customer lifetime value (CLV): average revenue per customer * expected customer lifetime (in years).",
+    "steps": [
+      {
+        "id": "c1",
+        "sql": "SELECT customer_id, SUM(amount) as revenue_per_customer FROM transactions GROUP BY customer_id;",
+        "description": "Aggregate revenue per customer."
+      },
+      {
+        "id": "c2",
+        "sql": "SELECT AVG(revenue_per_customer) as avg_rev_per_customer FROM <customer_revenue> ;",
+        "description": "Compute average revenue per customer across all customers."
+      },
+      {
+        "id": "c3",
+        "sql": "# business rule: use expected lifetime = 3 years",
+        "description": "Apply business rule: expected customer lifetime = 3 years."
+      },
+      {
+        "id": "c4",
+        "sql": "SELECT avg_rev_per_customer * 3 as expected_customer_ltv;",
+        "description": "Multiply average revenue per customer by expected lifetime to get CLV."
+      }
+    ]
+  }
+}

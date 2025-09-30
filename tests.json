@@ -1,0 +1,18 @@
+[
+    {
+      "query": "How was revenue_q2_2023 calculated?",
+      "metric": "revenue_q2_2023",
+      "ground_truth": "Filter transactions between 2023-04-01 and 2023-06-30, then sum the 'amount' column to compute Q2 revenue."
+    },
+    {
+      "query": "Explain gross_margin_percentage_by_product.",
+      "metric": "gross_margin_percentage_by_product",
+      "ground_truth": "Aggregate revenue by product (sum amounts), compute COGS by product (sum costs), then compute (revenue - cogs) / revenue per product."
+    },
+    {
+      "query": "What is customer_ltv?",
+      "metric": "customer_ltv",
+      "ground_truth": "Aggregate revenue per customer, compute average revenue per customer, assume expected lifetime = 3 years, multiply average by 3 to estimate CLV."
+    }
+  ]
+  

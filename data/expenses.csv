@@ -1,0 +1,4 @@
+expense_id,date,type,amount,region
+1,2023-03-15,Hosting,1200,US
+2,2023-04-20,Salaries,15000,EU
+3,2023-07-01,Marketing,4000,APAC
